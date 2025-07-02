@@ -115,7 +115,7 @@ const AdminHeader = ({ userRole, onToggleSidebar, sidebarOpen, onToggleDesktopSi
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-sm">
-      <div className="flex h-16 items-center justify-between px-4 sm:px-6">
+      <div className="flex h-17 items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
           {/* Desktop Sidebar Toggle Button */}
           <Button

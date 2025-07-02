@@ -103,78 +103,45 @@ const AdminSidebar = ({ onLogout, userRole, onNavigate, activeModule, isOpen, on
         </div>
 
         {/* Navigation - Enhanced Scrollable Area */}
-        <div className="flex-1 overflow-y-auto px-2 py-4 custom-scrollbar scroll-smooth">
-          <style jsx>{`
-            /* Custom scrollbar styles for sidebar */
-            .custom-scrollbar::-webkit-scrollbar {
-              width: 8px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-track {
-              background-color: #f8fafc;
-              border-radius: 4px;
-              margin: 4px 0;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb {
-              background-color: #cbd5e1;
-              border-radius: 4px;
-              border: 1px solid #f8fafc;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-              background-color: #94a3b8;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb:active {
-              background-color: #64748b;
-            }
-            /* Firefox scrollbar */
-            .custom-scrollbar {
-              scrollbar-width: thin;
-              scrollbar-color: #cbd5e1 #f8fafc;
-            }
-            /* Always show scrollbar */
-            .custom-scrollbar::-webkit-scrollbar {
-              -webkit-appearance: none;
-            }
-          `}</style>
-          
-          <div className="space-y-1">
-            <div className="text-xs font-medium text-gray-500 mb-2 px-3 sticky top-0 bg-white py-1 z-10">
-              MAIN NAVIGATION
-            </div>
-            {menuItems.map((item) => (
-              <button
-                key={item.title}
-                onClick={() => {
-                  onNavigate(item.url);
-                  // Close sidebar on mobile after navigation
-                  if (window.innerWidth < 1024) {
-                    onToggle();
-                  }
-                }}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200 hover:scale-[1.02] ${
-                  activeModule === item.url
-                    ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700 shadow-sm'
-                    : 'text-gray-700 hover:bg-gray-100 hover:shadow-sm'
-                }`}
-              >
-                <item.icon className={`w-4 h-4 flex-shrink-0 ${activeModule === item.url ? 'text-blue-700' : ''}`} />
-                <span className={`text-sm truncate ${activeModule === item.url ? 'font-medium' : ''}`}>
-                  {item.title}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
+<div className="flex-1 overflow-y-auto px-2 pb-0 custom-scrollbar scroll-smooth">
+  <div className="space-y-1 pb-0 mb-0">
+    <div className="text-xs font-medium text-gray-500 mb-2 px-3 sticky top-0 bg-white py-1 z-10">
+      MAIN NAVIGATION
+    </div>
+    {menuItems.map((item) => (
+      <button
+        key={item.title}
+        onClick={() => {
+          onNavigate(item.url);
+          if (window.innerWidth < 1024) {
+            onToggle();
+          }
+        }}
+        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200 hover:scale-[1.02] ${
+          activeModule === item.url
+            ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700 shadow-sm'
+            : 'text-gray-700 hover:bg-gray-100 hover:shadow-sm'
+        }`}
+      >
+        <item.icon className={`w-4 h-4 flex-shrink-0 ${activeModule === item.url ? 'text-blue-700' : ''}`} />
+        <span className={`text-sm truncate ${activeModule === item.url ? 'font-medium' : ''}`}>
+          {item.title}
+        </span>
+      </button>
+    ))}
+  </div>
+</div>
 
-        {/* Footer */}
-        <div className="p-4 border-t border-gray-200 flex-shrink-0">
-          <button
-            onClick={onLogout}
-            className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
-          </button>
-        </div>
+{/* Footer */}
+<div className="p-4 border-t border-gray-200 flex-shrink-0">
+  <button
+    onClick={onLogout}
+    className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+  >
+    <LogOut className="w-4 h-4" />
+    <span>Logout</span>
+  </button>
+</div>
       </div>
     </>
   );

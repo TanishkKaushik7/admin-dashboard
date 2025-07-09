@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { SidebarProvider } from '../components/ui/sidebar';
 import AdminSidebar from '../components/AdminSidebar';
 import AdminHeader from '../components/AdminHeader';
-// import UniversityCommandCentre from '../components/UniversityCommandCentre';
+import UniversityCommandCentre from '../components/UniversityCommandCentre';
 import EmployeeOnboarding from './EmployeeOnboarding';
 import LeaveManagement from './LeaveManagement';
-// import UserManagement from './UserManagement';
-// import StudentOnboarding from './StudentOnboarding';
+import UserManagement from './UserManagement';
+import StudentOnboarding from './StudentOnboarding';
 import CourseMapping from './CourseMapping';
 import ExamManagement from './ExamManagement';
 import DegreeAudit from './DegreeAudit';
@@ -18,7 +18,7 @@ import StartupPanel from './StartupPanel';
 import IQACModule from './IQACModule';
 import ELibrary from './ELibrary';
 import BiometricLogs from './BiometricLogs';
-// import WorkflowAnalytics from './WorkflowAnalytics';
+import WorkflowAnalytics from './WorkflowAnalytics';
 
 const AdminDashboard = ({ userRole, onLogout }) => {
   const [activeModule, setActiveModule] = useState('dashboard');

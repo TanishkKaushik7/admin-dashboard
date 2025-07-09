@@ -7,17 +7,17 @@ import AdminHeader from '../components/AdminHeader';
 // import LeaveManagement from './LeaveManagement';
 // import UserManagement from './UserManagement';
 // import StudentOnboarding from './StudentOnboarding';
-// import CourseMapping from './CourseMapping';
+import CourseMapping from './CourseMapping';
 // import ExamManagement from './ExamManagement';
 // import DegreeAudit from './DegreeAudit';
 // import GrievanceTracker from './GrievanceTracker';
 // import FileMovement from './FileMovement';
 // import ProjectTracking from './ProjectTracking';
-// import ClubsAndSocieties from './ClubsAndSocieties';
+import ClubsAndSocieties from './ClubsAndSocieties';
 // import StartupPanel from './StartupPanel';
 // import IQACModule from './IQACModule';
 // import ELibrary from './ELibrary';
-// import BiometricLogs from './BiometricLogs';
+import BiometricLogs from './BiometricLogs';
 // import WorkflowAnalytics from './WorkflowAnalytics';
 
 const AdminDashboard = ({ userRole, onLogout }) => {

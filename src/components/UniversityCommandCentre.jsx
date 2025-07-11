@@ -152,7 +152,7 @@ const UniversityCommandCentre = ({ userRole }) => {
   return (
     <div className={`space-y-6 ${darkMode ? 'dark' : ''}`}>
       {/* Header with Dynamic Greeting */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg p-6 text-white">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg p-6 text-white shadow-lg">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold mb-2">
@@ -190,7 +190,7 @@ const UniversityCommandCentre = ({ userRole }) => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <div className={`w-12 h-12 ${tile.color} rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                  <div className={`w-12 h-12 ${tile.color} rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-md`}>
                     <tile.icon className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="font-semibold text-gray-900 mb-1">{tile.title}</h3>
@@ -198,7 +198,7 @@ const UniversityCommandCentre = ({ userRole }) => {
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <Badge variant="secondary" className="text-lg font-bold">
+                <Badge variant="secondary" className="text-lg font-bold shadow-sm">
                   {tile.count}
                 </Badge>
                 <span className="text-xs text-gray-400 group-hover:text-gray-600 transition-colors">
@@ -212,7 +212,7 @@ const UniversityCommandCentre = ({ userRole }) => {
 
       {/* Main Dashboard Tabs */}
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-6 shadow-sm gap-30">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="approvals">Approvals</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
@@ -224,7 +224,7 @@ const UniversityCommandCentre = ({ userRole }) => {
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Today's Birthdays */}
-            <Card>
+            <Card className="shadow-sm">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
@@ -236,6 +236,7 @@ const UniversityCommandCentre = ({ userRole }) => {
                     <Switch
                       checked={birthdayGreetingsEnabled}
                       onCheckedChange={setBirthdayGreetingsEnabled}
+                      className="shadow-sm"
                     />
                   </div>
                 </div>
@@ -244,18 +245,26 @@ const UniversityCommandCentre = ({ userRole }) => {
               <CardContent>
                 <div className="space-y-4">
                   {birthdaysToday.map((person, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                    <div 
+                      key={index} 
+                      className="flex items-center justify-between p-4 bg-yellow-50 rounded-lg shadow-[0_1px_3px_0_rgba(0,0,0,0.1)] hover:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] transition-shadow"
+                    >
                       <div>
                         <p className="font-medium">{person.name}</p>
                         <p className="text-sm text-gray-600">{person.department} • {person.type}</p>
                       </div>
                       <Button
-                        size="sm"
-                        onClick={() => handleBirthdayGreeting(person)}
-                        disabled={!birthdayGreetingsEnabled}
-                      >
-                        Send Wishes 🎉
-                      </Button>
+  size="sm"
+  onClick={() => handleBirthdayGreeting(person)}
+  disabled={!birthdayGreetingsEnabled}
+  className={`shadow-sm ${
+    birthdayGreetingsEnabled 
+      ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+      : 'bg-gray-200 text-gray-500'
+  }`}
+>
+  Send Wishes 🎉
+</Button>
                     </div>
                   ))}
                 </div>
@@ -263,7 +272,7 @@ const UniversityCommandCentre = ({ userRole }) => {
             </Card>
 
             {/* Today's Meetings */}
-            <Card>
+            <Card className="shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calendar className="w-5 h-5" />
@@ -274,14 +283,17 @@ const UniversityCommandCentre = ({ userRole }) => {
               <CardContent>
                 <div className="space-y-4">
                   {todaysMeetings.map((meeting, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div 
+                      key={index} 
+                      className="flex items-center justify-between p-4 rounded-lg bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] transition-shadow"
+                    >
                       <div>
                         <p className="font-medium">{meeting.title}</p>
                         <p className="text-sm text-gray-600">
                           {meeting.time} • {meeting.location} • {meeting.attendees} attendees
                         </p>
                       </div>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="shadow-sm">
                         Join
                       </Button>
                     </div>
@@ -293,15 +305,15 @@ const UniversityCommandCentre = ({ userRole }) => {
         </TabsContent>
 
         <TabsContent value="approvals" className="space-y-6">
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Pending Approvals Centre</CardTitle>
               <CardDescription>Items requiring your immediate attention</CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
+              <Table className="shadow-sm">
+                <TableHeader className="bg-gray-50">
+                  <TableRow className="shadow-sm">
                     <TableHead>Type</TableHead>
                     <TableHead>Details</TableHead>
                     <TableHead>School</TableHead>
@@ -312,15 +324,16 @@ const UniversityCommandCentre = ({ userRole }) => {
                 </TableHeader>
                 <TableBody>
                   {pendingApprovals.map((item) => (
-                    <TableRow key={item.id}>
+                    <TableRow key={item.id} className="hover:shadow-sm">
                       <TableCell className="font-medium">{item.type}</TableCell>
                       <TableCell>{item.name}</TableCell>
                       <TableCell>
-                        <Badge variant="outline">{item.school}</Badge>
+                        <Badge variant="outline" className="shadow-sm">{item.school}</Badge>
                       </TableCell>
                       <TableCell>
                         <Badge
                           variant={item.priority === 'High' ? 'destructive' : 'secondary'}
+                          className="shadow-sm"
                         >
                           {item.priority}
                         </Badge>
@@ -331,6 +344,7 @@ const UniversityCommandCentre = ({ userRole }) => {
                           <Button
                             size="sm"
                             onClick={() => handleApproval(item.id, 'approve')}
+                            className="shadow-sm"
                           >
                             Approve
                           </Button>
@@ -338,6 +352,7 @@ const UniversityCommandCentre = ({ userRole }) => {
                             size="sm"
                             variant="outline"
                             onClick={() => handleApproval(item.id, 'reject')}
+                            className="shadow-sm"
                           >
                             Reject
                           </Button>
@@ -353,33 +368,33 @@ const UniversityCommandCentre = ({ userRole }) => {
 
         <TabsContent value="analytics" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
+            <Card className="shadow-sm">
               <CardHeader>
                 <CardTitle>Monthly Analytics</CardTitle>
                 <CardDescription>Administrative workflow insights</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center p-3 rounded-lg shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]">
                     <span>Total Approvals This Month</span>
-                    <Badge className="text-lg">247</Badge>
+                    <Badge className="text-lg font-bold shadow-sm">247</Badge>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center p-3 rounded-lg shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]">
                     <span>Average Processing Time</span>
-                    <Badge variant="secondary">2.3 days</Badge>
+                    <Badge variant="secondary" className="shadow-sm">2.3 days</Badge>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center p-3 rounded-lg shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]">
                     <span>Approval Rate</span>
-                    <Badge className="bg-green-500">94.2%</Badge>
+                    <Badge className="bg-green-500 shadow-sm">94.2%</Badge>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center p-3 rounded-lg shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]">
                     <span>Pending Items</span>
-                    <Badge variant="destructive">{pendingApprovals.length}</Badge>
+                    <Badge variant="destructive" className="shadow-sm">{pendingApprovals.length}</Badge>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="shadow-sm">
               <CardHeader>
                 <CardTitle>School-wise Performance</CardTitle>
                 <CardDescription>Departmental efficiency metrics</CardDescription>
@@ -387,12 +402,15 @@ const UniversityCommandCentre = ({ userRole }) => {
               <CardContent>
                 <div className="space-y-3">
                   {['SoICT', 'SoE', 'SoM', 'SoHSS', 'SoBSC'].map((school) => (
-                    <div key={school} className="flex justify-between items-center">
+                    <div 
+                      key={school} 
+                      className="flex justify-between items-center p-3 rounded-lg shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
+                    >
                       <span className="font-medium">{school}</span>
                       <div className="flex items-center gap-2">
-                        <div className="w-20 bg-gray-200 rounded-full h-2">
+                        <div className="w-20 bg-gray-200 rounded-full h-2 shadow-inner">
                           <div
-                            className="bg-blue-600 h-2 rounded-full"
+                            className="bg-blue-600 h-2 rounded-full shadow-sm"
                             style={{ width: `${Math.random() * 40 + 60}%` }}
                           />
                         </div>
@@ -409,37 +427,32 @@ const UniversityCommandCentre = ({ userRole }) => {
         </TabsContent>
 
         <TabsContent value="biometric" className="space-y-6">
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Live Biometric Dashboard</CardTitle>
               <CardDescription>Real-time attendance monitoring</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">{biometricSummary.totalPresent}</div>
-                  <div className="text-sm text-gray-600">Present Today</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-600">{biometricSummary.totalStaff}</div>
-                  <div className="text-sm text-gray-600">Total Staff</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-orange-600">{biometricSummary.lateArrivals}</div>
-                  <div className="text-sm text-gray-600">Late Arrivals</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-red-600">{biometricSummary.earlyDepartures}</div>
-                  <div className="text-sm text-gray-600">Early Exits</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">{biometricSummary.anomalies}</div>
-                  <div className="text-sm text-gray-600">Anomalies</div>
-                </div>
+                {[
+                  { value: biometricSummary.totalPresent, label: 'Present Today', color: 'text-green-600' },
+                  { value: biometricSummary.totalStaff, label: 'Total Staff', color: 'text-gray-600' },
+                  { value: biometricSummary.lateArrivals, label: 'Late Arrivals', color: 'text-orange-600' },
+                  { value: biometricSummary.earlyDepartures, label: 'Early Exits', color: 'text-red-600' },
+                  { value: biometricSummary.anomalies, label: 'Anomalies', color: 'text-purple-600' }
+                ].map((item, index) => (
+                  <div 
+                    key={index} 
+                    className="text-center p-3 rounded-lg shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
+                  >
+                    <div className={`text-2xl font-bold ${item.color}`}>{item.value}</div>
+                    <div className="text-sm text-gray-600">{item.label}</div>
+                  </div>
+                ))}
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-3">
+              <div className="w-full bg-gray-200 rounded-full h-3 shadow-inner">
                 <div
-                  className="bg-green-600 h-3 rounded-full"
+                  className="bg-green-600 h-3 rounded-full shadow-sm"
                   style={{ width: `${(biometricSummary.totalPresent / biometricSummary.totalStaff) * 100}%` }}
                 />
               </div>
@@ -451,7 +464,7 @@ const UniversityCommandCentre = ({ userRole }) => {
         </TabsContent>
 
         <TabsContent value="meetings" className="space-y-6">
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Meeting & Events Calendar</CardTitle>
               <CardDescription>Scheduled meetings and university events</CardDescription>
@@ -459,23 +472,24 @@ const UniversityCommandCentre = ({ userRole }) => {
             <CardContent>
               <div className="space-y-4">
                 {todaysMeetings.map((meeting, index) => (
-                  <div key={index} className="p-4 border rounded-lg hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <h3 className="font-semibold">{meeting.title}</h3>
-                        <p className="text-sm text-gray-600 mt-1">
-                          <Clock className="w-4 h-4 inline mr-1" />
-                          {meeting.time} •
-                          <MapPin className="w-4 h-4 inline ml-2 mr-1" />
-                          {meeting.location} •
-                          <Users className="w-4 h-4 inline ml-2 mr-1" />
-                          {meeting.attendees} attendees
-                        </p>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">View Agenda</Button>
-                        <Button size="sm">Join Meeting</Button>
-                      </div>
+                  <div 
+                    key={index} 
+                    className="flex items-center justify-between p-4 rounded-lg bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] transition-shadow"
+                  >
+                    <div className="flex-1">
+                      <h3 className="font-semibold">{meeting.title}</h3>
+                      <p className="text-sm text-gray-600 mt-1">
+                        <Clock className="w-4 h-4 inline mr-1" />
+                        {meeting.time} •
+                        <MapPin className="w-4 h-4 inline ml-2 mr-1" />
+                        {meeting.location} •
+                        <Users className="w-4 h-4 inline ml-2 mr-1" />
+                        {meeting.attendees} attendees
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" className="shadow-sm">View Agenda</Button>
+                      <Button size="sm" className="shadow-sm">Join Meeting</Button>
                     </div>
                   </div>
                 ))}
@@ -485,7 +499,7 @@ const UniversityCommandCentre = ({ userRole }) => {
         </TabsContent>
 
         <TabsContent value="alerts" className="space-y-6">
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Smart Alerts & Notifications</CardTitle>
               <CardDescription>AI-powered insights and priority alerts</CardDescription>
@@ -495,11 +509,11 @@ const UniversityCommandCentre = ({ userRole }) => {
                 {smartAlerts.map((alert, index) => (
                   <div
                     key={index}
-                    className={`p-4 border rounded-lg ${
-                      alert.type === 'urgent' ? 'bg-red-50 border-red-200' :
-                      alert.type === 'warning' ? 'bg-yellow-50 border-yellow-200' :
-                      alert.type === 'info' ? 'bg-blue-50 border-blue-200' :
-                      'bg-green-50 border-green-200'
+                    className={`p-4 rounded-lg shadow-[0_1px_3px_0_rgba(0,0,0,0.1)] hover:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] transition-shadow ${
+                      alert.type === 'urgent' ? 'bg-red-50' :
+                      alert.type === 'warning' ? 'bg-yellow-50' :
+                      alert.type === 'info' ? 'bg-blue-50' :
+                      'bg-green-50'
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -512,7 +526,7 @@ const UniversityCommandCentre = ({ userRole }) => {
                         }`} />
                         <span className="font-medium">{alert.message}</span>
                       </div>
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" className="shadow-sm">
                         {alert.action}
                       </Button>
                     </div>

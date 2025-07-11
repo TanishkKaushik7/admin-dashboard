@@ -146,10 +146,10 @@ const AdminHeader = ({ userRole, onToggleSidebar, sidebarOpen, onToggleDesktopSi
                 <span className="sm:hidden">GBU</span>
               </h1>
             </div>
-            <Badge variant="secondary" className="text-xs hidden xs:inline-flex flex-shrink-0">
-              <span className="hidden sm:inline">{getRoleLabel(userRole)}</span>
-              <span className="sm:hidden">{userRole?.toUpperCase() || 'ADMIN'}</span>
-            </Badge>
+            <Badge variant="secondary" className="text-xs hidden xs:inline-flex flex-shrink-0 mr-2 sm:mr-4">
+  <span className="hidden sm:inline">{getRoleLabel(userRole)}</span>
+  <span className="sm:hidden">{userRole?.toUpperCase() || 'ADMIN'}</span>
+</Badge>
           </div>
         </div>
 
@@ -168,10 +168,10 @@ const AdminHeader = ({ userRole, onToggleSidebar, sidebarOpen, onToggleDesktopSi
           <div className="relative hidden md:block">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
-              placeholder="Search approvals, files, staff..."
-              className="pl-10 w-64 lg:w-80 bg-gray-50 border-gray-200 focus:bg-white"
-            />
-          </div>
+          placeholder="Search approvals, files, staff..."
+          className="pl-10 w-64 lg:w-80 bg-gray-50 border-gray-200 focus:bg-white focus:ring-2 focus:ring-black focus:border-transparent"
+        />
+        </div>
 
           {/* Notifications */}
           <DropdownMenu>

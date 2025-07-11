@@ -1,12 +1,9 @@
 import * as React from "react";
-import * as LabelPrimitive from "@radix-ui/react-label";
-import { Slot } from "@radix-ui/react-slot";
 import {
   Controller,
   FormProvider,
   useFormContext,
 } from "react-hook-form";
-
 import { cn } from "../../lib/utils";
 import { Label } from "../../components/ui/label";
 
@@ -70,21 +67,34 @@ const FormLabel = React.forwardRef(function FormLabel({ className, ...props }, r
 });
 FormLabel.displayName = "FormLabel";
 
-const FormControl = React.forwardRef(function FormControl(props, ref) {
+// Replacement for Slot component
+const FormControl = React.forwardRef(function FormControl({ asChild = false, children, ...props }, ref) {
   const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
+  
+  const ariaDescribedBy = !error
+    ? `${formDescriptionId}`
+    : `${formDescriptionId} ${formMessageId}`;
+
+  if (asChild) {
+    return React.cloneElement(React.Children.only(children), {
+      ref,
+      id: formItemId,
+      'aria-describedby': ariaDescribedBy,
+      'aria-invalid': !!error,
+      ...props
+    });
+  }
 
   return (
-    <Slot
+    <div
       ref={ref}
       id={formItemId}
-      aria-describedby={
-        !error
-          ? `${formDescriptionId}`
-          : `${formDescriptionId} ${formMessageId}`
-      }
+      aria-describedby={ariaDescribedBy}
       aria-invalid={!!error}
       {...props}
-    />
+    >
+      {children}
+    </div>
   );
 });
 FormControl.displayName = "FormControl";

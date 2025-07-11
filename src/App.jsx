@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Toaster } from "../src/components/ui/toaster";
-import { Sonner } from "../src/components/ui/sonner";
-import { TooltipProvider } from "../src/components/ui/tooltip";
+import { ToastProvider } from "./components/ui/sonner";
+import { TooltipProvider } from "./components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 
@@ -24,12 +23,12 @@ const App = () => {
   const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
-    // On initial load, check if token and role are saved
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
     if (token && role) {
       setIsLoggedIn(true);
       setUserRole(role);
+      toast.success(`Welcome back, ${role}!`);
     }
   }, []);
 
@@ -37,7 +36,7 @@ const App = () => {
     localStorage.setItem("role", role);
     setUserRole(role);
     setIsLoggedIn(true);
-    console.log(`Admin logged in with role: ${role}`);
+    toast.success(`Logged in as ${role}`);
   };
 
   const handleLogout = () => {
@@ -45,39 +44,38 @@ const App = () => {
     localStorage.removeItem("role");
     setIsLoggedIn(false);
     setUserRole("");
-    console.log("Admin logged out");
+    toast.success("Logged out successfully");
   };
 
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <BrowserRouter>
-          <Toaster />
-          <Sonner />
-
-          <Routes>
-            <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route
-              path="/login"
-              element={
-                isLoggedIn ? (
-                  <Navigate to="/dashboard" replace />
-                ) : (
-                  <LoginPage onLogin={handleLogin} />
-                )
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <RequireAuth isLoggedIn={isLoggedIn}>
-                  <AdminDashboard userRole={userRole} onLogout={handleLogout} />
-                </RequireAuth>
-              }
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <ToastProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Navigate to="/login" replace />} />
+              <Route
+                path="/login"
+                element={
+                  isLoggedIn ? (
+                    <Navigate to="/dashboard" replace />
+                  ) : (
+                    <LoginPage onLogin={handleLogin} />
+                  )
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <RequireAuth isLoggedIn={isLoggedIn}>
+                    <AdminDashboard userRole={userRole} onLogout={handleLogout} />
+                  </RequireAuth>
+                }
+              />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </ToastProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

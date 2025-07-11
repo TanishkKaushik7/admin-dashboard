@@ -1,15 +1,13 @@
 import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
-
 import { cn } from "../../lib/utils";
 
-const Breadcrumb = React.forwardRef(function Breadcrumb(props, ref) {
+const Breadcrumb = React.forwardRef((props, ref) => {
   return <nav ref={ref} aria-label="breadcrumb" {...props} />;
 });
 Breadcrumb.displayName = "Breadcrumb";
 
-const BreadcrumbList = React.forwardRef(function BreadcrumbList({ className, ...props }, ref) {
+const BreadcrumbList = React.forwardRef(({ className, ...props }, ref) => {
   return (
     <ol
       ref={ref}
@@ -23,7 +21,7 @@ const BreadcrumbList = React.forwardRef(function BreadcrumbList({ className, ...
 });
 BreadcrumbList.displayName = "BreadcrumbList";
 
-const BreadcrumbItem = React.forwardRef(function BreadcrumbItem({ className, ...props }, ref) {
+const BreadcrumbItem = React.forwardRef(({ className, ...props }, ref) => {
   return (
     <li
       ref={ref}
@@ -34,8 +32,18 @@ const BreadcrumbItem = React.forwardRef(function BreadcrumbItem({ className, ...
 });
 BreadcrumbItem.displayName = "BreadcrumbItem";
 
-const BreadcrumbLink = React.forwardRef(function BreadcrumbLink({ asChild, className, ...props }, ref) {
-  const Comp = asChild ? Slot : "a";
+const BreadcrumbLink = React.forwardRef(({ asChild, className, ...props }, ref) => {
+  const Comp = asChild ? React.Fragment : "a";
+  
+  if (asChild) {
+    const { children } = props;
+    return React.cloneElement(React.Children.only(children), {
+      ref,
+      className: cn("transition-colors hover:text-foreground", className),
+      ...props
+    });
+  }
+
   return (
     <Comp
       ref={ref}
@@ -46,7 +54,7 @@ const BreadcrumbLink = React.forwardRef(function BreadcrumbLink({ asChild, class
 });
 BreadcrumbLink.displayName = "BreadcrumbLink";
 
-const BreadcrumbPage = React.forwardRef(function BreadcrumbPage({ className, ...props }, ref) {
+const BreadcrumbPage = React.forwardRef(({ className, ...props }, ref) => {
   return (
     <span
       ref={ref}

@@ -17,7 +17,7 @@ import {
   SelectValue
 } from '../components/ui/select';
 import { Shield, User, Lock, University } from 'lucide-react';
-import { loginUser } from '../lib/auth'; // Corrected from 'api' to 'auth'
+import { loginUser } from '../lib/auth';
 
 const LoginPage = ({ onLogin }) => {
   const [credentials, setCredentials] = useState({
@@ -39,7 +39,6 @@ const LoginPage = ({ onLogin }) => {
     { value: 'research', label: 'Research Cell Admin' }
   ];
 
-  // 🔐 Hardcoded fallback credentials
   const fallbackCredentials = {
     email: 'admin@gbu.edu.in',
     password: 'admin123',
@@ -75,7 +74,7 @@ const LoginPage = ({ onLogin }) => {
         setError(
           err?.response?.data?.non_field_errors?.[0] ||
           err?.response?.data?.detail ||
-          'Login failed'
+          'Login failed. Please check your credentials.'
         );
       }
     } finally {
@@ -88,7 +87,7 @@ const LoginPage = ({ onLogin }) => {
       <div className="w-full max-w-md animate-fade-in">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
             <University className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">GBU Admin Portal</h1>
@@ -98,7 +97,7 @@ const LoginPage = ({ onLogin }) => {
         <Card className="shadow-xl border-0">
           <CardHeader className="pb-4">
             <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2">
-              <Shield className="w-5 h-5 text-primary" />
+              <Shield className="w-5 h-5 text-blue-600" />
               Admin Login
             </CardTitle>
             <CardDescription className="text-center">
@@ -116,7 +115,7 @@ const LoginPage = ({ onLogin }) => {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="admin@gbu.edu.in"
                     className="pl-10"
                     value={credentials.email}
                     onChange={(e) =>
@@ -136,7 +135,7 @@ const LoginPage = ({ onLogin }) => {
                   <Input
                     id="password"
                     type="password"
-                    placeholder="Enter your password"
+                    placeholder="••••••••"
                     className="pl-10"
                     value={credentials.password}
                     onChange={(e) =>
@@ -153,19 +152,25 @@ const LoginPage = ({ onLogin }) => {
                 </Label>
                 <Select
                   value={credentials.role}
-                  onValueChange={(value) =>
-                    setCredentials({ ...credentials, role: value })
-                  }
+                  onValueChange={(value) => {
+                    setCredentials({ ...credentials, role: value });
+                  }}
+                  required
                 >
-                  <SelectTrigger className="bg-white text-gray-800 border border-gray-300 hover:border-gray-400 focus:ring-2 focus:ring-primary">
-                    <SelectValue placeholder="Choose your admin role" />
+                  <SelectTrigger className="w-full bg-white text-gray-800 border border-gray-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500">
+                    <SelectValue placeholder="Choose your admin role..." />
                   </SelectTrigger>
-                  <SelectContent className="bg-white text-gray-800 shadow-lg border border-gray-200">
+                  <SelectContent 
+                    className="bg-white text-gray-800 shadow-lg border border-gray-200 z-[9999] max-h-[300px] overflow-y-auto"
+                    position="popper"
+                    sideOffset={4}
+                    align="start"
+                  >
                     {adminRoles.map((role) => (
-                      <SelectItem
-                        key={role.value}
+                      <SelectItem 
+                        key={role.value} 
                         value={role.value}
-                        className="hover:bg-gray-100 focus:bg-gray-100"
+                        className="hover:bg-gray-100 focus:bg-gray-100 cursor-pointer"
                       >
                         {role.label}
                       </SelectItem>
@@ -175,12 +180,14 @@ const LoginPage = ({ onLogin }) => {
               </div>
 
               {error && (
-                <p className="text-sm text-red-500 mt-1 font-medium">{error}</p>
+                <div className="mt-2 p-2 bg-red-50 rounded-md">
+                  <p className="text-sm text-red-600 font-medium">{error}</p>
+                </div>
               )}
 
               <Button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 mt-4"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 mt-2"
                 disabled={
                   loading ||
                   !credentials.email ||
@@ -188,7 +195,17 @@ const LoginPage = ({ onLogin }) => {
                   !credentials.role
                 }
               >
-                {loading ? 'Signing In...' : 'Sign In to Dashboard'}
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Signing In...
+                  </span>
+                ) : (
+                  'Sign In to Dashboard'
+                )}
               </Button>
             </form>
 

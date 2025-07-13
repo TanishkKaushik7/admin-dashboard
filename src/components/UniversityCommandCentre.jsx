@@ -211,15 +211,31 @@ const UniversityCommandCentre = ({ userRole }) => {
       </div>
 
       {/* Main Dashboard Tabs */}
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6 shadow-sm gap-30">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="approvals">Approvals</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="biometric">Biometric</TabsTrigger>
-          <TabsTrigger value="meetings">Meetings</TabsTrigger>
-          <TabsTrigger value="alerts">Smart Alerts</TabsTrigger>
-        </TabsList>
+<Tabs defaultValue="overview" className="space-y-6">
+  <div className="relative">
+  <TabsList className="w-full overflow-x-auto pb-2 shadow-sm">
+    <div className="flex space-x-5 min-w-max sm:min-w-0 sm:space-x-3 md:space-x-4">
+      <TabsTrigger value="overview" className="px-4 py-2 whitespace-nowrap text-sm sm:text-base md:text-lg">
+        Overview
+      </TabsTrigger>
+      <TabsTrigger value="approvals" className="px-4 py-2 whitespace-nowrap text-sm sm:text-base md:text-lg">
+        Approvals
+      </TabsTrigger>
+      <TabsTrigger value="analytics" className="px-4 py-2 whitespace-nowrap text-sm sm:text-base md:text-lg">
+        Analytics
+      </TabsTrigger>
+      <TabsTrigger value="biometric" className="px-4 py-2 whitespace-nowrap text-sm sm:text-base md:text-lg">
+        Biometric
+      </TabsTrigger>
+      <TabsTrigger value="meetings" className="px-4 py-2 whitespace-nowrap text-sm sm:text-base md:text-lg">
+        Meetings
+      </TabsTrigger>
+      <TabsTrigger value="alerts" className="px-4 py-2 whitespace-nowrap text-sm sm:text-base md:text-lg">
+        Smart Alerts
+      </TabsTrigger>
+    </div>
+  </TabsList>
+</div>
 
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

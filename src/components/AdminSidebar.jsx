@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Home,
   Users,
@@ -42,6 +42,19 @@ const menuItems = [
 ];
 
 const AdminSidebar = ({ onLogout, userRole, onNavigate, activeModule, isOpen, onToggle, isHidden, isCollapsing }) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const getRoleLabel = (role) => {
     const roleLabels = {
       'registrar': 'Registrar',
@@ -63,14 +76,6 @@ const AdminSidebar = ({ onLogout, userRole, onNavigate, activeModule, isOpen, on
 
   return (
     <>
-      {/* Mobile Backdrop */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={onToggle}
-        />
-      )}
-      
       {/* Sidebar */}
       <div className={`
         fixed lg:static inset-y-0 left-0 z-50 lg:z-auto
@@ -113,7 +118,8 @@ const AdminSidebar = ({ onLogout, userRole, onNavigate, activeModule, isOpen, on
         key={item.title}
         onClick={() => {
           onNavigate(item.url);
-          if (window.innerWidth < 1024) {
+          // Close sidebar only on mobile after navigation
+          if (isMobile) {
             onToggle();
           }
         }}

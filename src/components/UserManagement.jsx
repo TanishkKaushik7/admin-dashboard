@@ -115,32 +115,33 @@ const UserManagement = () => {
     (selectedSchool === '' || user.school === selectedSchool) &&
     (roleFilter === 'all' || user.role.toLowerCase() === roleFilter) &&
     (user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()))
+    user.email.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">User Management</h2>
           <p className="text-gray-600">Manage system users, roles, and permissions</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" className="flex-1 md:flex-none">
             <Download className="w-4 h-4 mr-2" />
-            Export CSV
+            <span className="whitespace-nowrap">Export CSV</span>
           </Button>
-          <Button>
+          <Button className="flex-1 md:flex-none">
             <UserPlus className="w-4 h-4 mr-2" />
-            Add User
+            <span className="whitespace-nowrap">Add User</span>
           </Button>
         </div>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Users</p>
@@ -151,7 +152,7 @@ const UserManagement = () => {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Active Users</p>
@@ -162,7 +163,7 @@ const UserManagement = () => {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Admin Users</p>
@@ -173,7 +174,7 @@ const UserManagement = () => {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Pending Approvals</p>
@@ -185,30 +186,42 @@ const UserManagement = () => {
         </Card>
       </div>
 
+      {/* Main Tabs */}
       <Tabs defaultValue="users" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="users">All Users</TabsTrigger>
-          <TabsTrigger value="roles">Roles & Permissions</TabsTrigger>
-          <TabsTrigger value="activity">Activity Logs</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-        </TabsList>
+        <div className="relative">
+          <TabsList className="w-full overflow-x-auto pb-2">
+            <div className="flex space-x-4 min-w-max">
+              <TabsTrigger value="users" className="px-4 py-2">
+                <span className="whitespace-nowrap">All Users</span>
+              </TabsTrigger>
+              <TabsTrigger value="roles" className="px-4 py-2">
+                <span className="whitespace-nowrap">Roles & Permissions</span>
+              </TabsTrigger>
+              <TabsTrigger value="activity" className="px-4 py-2">
+                <span className="whitespace-nowrap">Activity Logs</span>
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="px-4 py-2">
+                <span className="whitespace-nowrap">Settings</span>
+              </TabsTrigger>
+            </div>
+          </TabsList>
+        </div>
 
         <TabsContent value="users" className="space-y-6">
           {/* Filters */}
           <Card>
             <CardContent className="p-4">
-              <div className="flex flex-wrap gap-4">
-                <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+                <div className="flex-1 flex items-center gap-2 min-w-[200px]">
                   <Search className="w-4 h-4 text-gray-400" />
                   <Input
                     placeholder="Search users..."
-                    className="w-64"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
                 <select
-                  className="px-3 py-1 border border-gray-300 rounded-md text-sm"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm min-w-[180px]"
                   value={selectedSchool}
                   onChange={(e) => setSelectedSchool(e.target.value)}
                 >
@@ -218,7 +231,7 @@ const UserManagement = () => {
                   ))}
                 </select>
                 <select
-                  className="px-3 py-1 border border-gray-300 rounded-md text-sm"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm min-w-[180px]"
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value)}
                 >
@@ -238,52 +251,54 @@ const UserManagement = () => {
               <CardDescription>Manage all system users and their access levels</CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>School/Dept</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Last Login</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredUsers.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell className="font-medium">{user.name}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>{getRoleBadge(user.role)}</TableCell>
-                      <TableCell>
-                        <div>
-                          <div className="font-medium">{user.school}</div>
-                          <div className="text-sm text-gray-500">{user.department}</div>
-                        </div>
-                      </TableCell>
-                      <TableCell>{getStatusBadge(user.status)}</TableCell>
-                      <TableCell>{user.lastLogin}</TableCell>
-                      <TableCell>
-                        <div className="flex gap-1">
-                          <Button size="sm" variant="outline">
-                            <Settings className="w-3 h-3" />
-                          </Button>
-                          <Button size="sm" variant="outline">
-                            <Key className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      </TableCell>
+              <div className="overflow-x-auto">
+                <Table className="min-w-[800px] md:min-w-full">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="whitespace-nowrap">Name</TableHead>
+                      <TableHead className="whitespace-nowrap">Email</TableHead>
+                      <TableHead className="whitespace-nowrap">Role</TableHead>
+                      <TableHead className="whitespace-nowrap">School/Dept</TableHead>
+                      <TableHead className="whitespace-nowrap">Status</TableHead>
+                      <TableHead className="whitespace-nowrap">Last Login</TableHead>
+                      <TableHead className="whitespace-nowrap">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredUsers.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell className="font-medium whitespace-nowrap">{user.name}</TableCell>
+                        <TableCell className="whitespace-nowrap">{user.email}</TableCell>
+                        <TableCell>{getRoleBadge(user.role)}</TableCell>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium whitespace-nowrap">{user.school}</div>
+                            <div className="text-sm text-gray-500 whitespace-nowrap">{user.department}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{getStatusBadge(user.status)}</TableCell>
+                        <TableCell className="whitespace-nowrap">{user.lastLogin}</TableCell>
+                        <TableCell>
+                          <div className="flex gap-1">
+                            <Button size="sm" variant="outline">
+                              <Settings className="w-3 h-3" />
+                            </Button>
+                            <Button size="sm" variant="outline">
+                              <Key className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="roles" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {roles.map((role) => (
               <Card key={role}>
                 <CardHeader>
@@ -325,17 +340,17 @@ const UserManagement = () => {
                   { user: 'Mr. Rajesh Kumar', action: 'Approved leave request', time: '1 hour ago', type: 'approval' },
                   { user: 'Dr. Priya Verma', action: 'Failed login attempt', time: '2 hours ago', type: 'error' }
                 ].map((log, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 rounded-lg gap-2">
                     <div className="flex items-center gap-3">
                       <div className={`w-2 h-2 rounded-full ${
                         log.type === 'login' ? 'bg-green-500' :
                         log.type === 'update' ? 'bg-blue-500' :
                         log.type === 'approval' ? 'bg-purple-500' : 'bg-red-500'
                       }`} />
-                      <p className="font-medium">{log.user}</p>
+                      <p className="font-medium whitespace-nowrap">{log.user}</p>
                       <p className="text-sm text-gray-600">{log.action}</p>
                     </div>
-                    <span className="text-sm text-gray-500">{log.time}</span>
+                    <span className="text-sm text-gray-500 sm:text-right">{log.time}</span>
                   </div>
                 ))}
               </div>

@@ -39,10 +39,107 @@ const LoginPage = ({ onLogin }) => {
     { value: 'research', label: 'Research Cell Admin' }
   ];
 
+  // Fallback credentials for development/testing
   const fallbackCredentials = {
     email: 'admin@gbu.edu.in',
     password: 'admin123',
     role: 'registrar'
+  };
+
+  // Validate credentials format
+  const validateCredentials = (creds) => {
+    const errors = [];
+    
+    if (!creds.email || !creds.email.trim()) {
+      errors.push('Email is required');
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(creds.email.trim())) {
+      errors.push('Please enter a valid email address');
+    }
+    
+    if (!creds.password) {
+      errors.push('Password is required');
+    } else if (creds.password.length < 6) {
+      errors.push('Password must be at least 6 characters long');
+    }
+    
+    if (!creds.role || creds.role.trim() === '') {
+      errors.push('Please select an admin role');
+    }
+    
+    return errors;
+  };
+
+  // Check if credentials match fallback
+  const isFallbackCredentials = (creds) => {
+    return creds.email === fallbackCredentials.email &&
+           creds.password === fallbackCredentials.password &&
+           creds.role === fallbackCredentials.role;
+  };
+
+  // Handle successful authentication
+  const handleAuthSuccess = (tokens, role) => {
+    try {
+      // Store tokens securely
+      if (tokens.access) {
+        localStorage.setItem('accessToken', tokens.access);
+      }
+      if (tokens.refresh) {
+        localStorage.setItem('refreshToken', tokens.refresh);
+      }
+      
+      // Store user role and login timestamp
+      localStorage.setItem('userRole', role);
+      localStorage.setItem('loginTime', Date.now().toString());
+      
+      // Call the onLogin callback
+      onLogin(role);
+    } catch (err) {
+      console.error('Error storing authentication data:', err);
+      setError('Authentication successful but failed to store session data');
+    }
+  };
+
+  // Handle authentication with fallback
+  const handleFallbackAuth = (role) => {
+    console.warn('Using fallback credentials for development');
+    
+    const fallbackTokens = {
+      access: `FALLBACK_ACCESS_TOKEN_${Date.now()}`,
+      refresh: `FALLBACK_REFRESH_TOKEN_${Date.now()}`
+    };
+    
+    handleAuthSuccess(fallbackTokens, role);
+  };
+
+  // Parse API error response
+  const parseApiError = (error) => {
+    if (!error.response) {
+      return 'Network error. Please check your connection and try again.';
+    }
+
+    const { data, status } = error.response;
+    
+    // Handle different error status codes
+    switch (status) {
+      case 400:
+        return data?.non_field_errors?.[0] || 
+               data?.detail || 
+               'Invalid credentials provided';
+      case 401:
+        return 'Invalid email or password';
+      case 403:
+        return 'Access forbidden. Please contact administrator';
+      case 404:
+        return 'Authentication service not found';
+      case 429:
+        return 'Too many login attempts. Please try again later';
+      case 500:
+        return 'Server error. Please try again later';
+      default:
+        return data?.detail || 
+               data?.message || 
+               'Authentication failed. Please try again';
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -51,35 +148,52 @@ const LoginPage = ({ onLogin }) => {
     setLoading(true);
 
     try {
-      const { access, refresh } = await loginUser(
-        credentials.email,
-        credentials.password
-      );
-
-      localStorage.setItem('accessToken', access);
-      localStorage.setItem('refreshToken', refresh);
-      onLogin(credentials.role);
-    } catch (err) {
-      const isFallbackMatch =
-        credentials.email === fallbackCredentials.email &&
-        credentials.password === fallbackCredentials.password &&
-        credentials.role === fallbackCredentials.role;
-
-      if (isFallbackMatch) {
-        console.warn('Logged in using fallback credentials');
-        localStorage.setItem('accessToken', 'FAKE_ACCESS_TOKEN');
-        localStorage.setItem('refreshToken', 'FAKE_REFRESH_TOKEN');
-        onLogin(credentials.role);
-      } else {
-        setError(
-          err?.response?.data?.non_field_errors?.[0] ||
-          err?.response?.data?.detail ||
-          'Login failed. Please check your credentials.'
-        );
+      // Validate credentials before attempting login
+      const validationErrors = validateCredentials(credentials);
+      if (validationErrors.length > 0) {
+        setError(validationErrors[0]);
+        setLoading(false);
+        return;
       }
+
+      // Attempt API authentication
+      try {
+        const authResponse = await loginUser(
+          credentials.email.trim(),
+          credentials.password
+        );
+
+        // Check if we received valid tokens
+        if (!authResponse.access) {
+          throw new Error('Invalid response from authentication service');
+        }
+
+        handleAuthSuccess(authResponse, credentials.role);
+        
+      } catch (apiError) {
+        // If API fails, check fallback credentials
+        if (isFallbackCredentials(credentials)) {
+          handleFallbackAuth(credentials.role);
+        } else {
+          // Parse and display API error
+          const errorMessage = parseApiError(apiError);
+          setError(errorMessage);
+        }
+      }
+
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  // Check if form is valid for submission
+  const isFormValid = () => {
+    return credentials.email && credentials.email.trim() && 
+           credentials.password && credentials.password.trim() && 
+           credentials.role && credentials.role.trim();
   };
 
   return (
@@ -122,6 +236,7 @@ const LoginPage = ({ onLogin }) => {
                       setCredentials({ ...credentials, email: e.target.value })
                     }
                     required
+                    disabled={loading}
                   />
                 </div>
               </div>
@@ -142,6 +257,7 @@ const LoginPage = ({ onLogin }) => {
                       setCredentials({ ...credentials, password: e.target.value })
                     }
                     required
+                    disabled={loading}
                   />
                 </div>
               </div>
@@ -154,8 +270,13 @@ const LoginPage = ({ onLogin }) => {
                   value={credentials.role}
                   onValueChange={(value) => {
                     setCredentials({ ...credentials, role: value });
+                    // Clear any existing error when role is selected
+                    if (error && error.includes('select an admin role')) {
+                      setError('');
+                    }
                   }}
                   required
+                  disabled={loading}
                 >
                   <SelectTrigger className="w-full bg-white text-gray-800 border border-gray-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500">
                     <SelectValue placeholder="Choose your admin role..." />
@@ -188,12 +309,7 @@ const LoginPage = ({ onLogin }) => {
               <Button
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 mt-2"
-                disabled={
-                  loading ||
-                  !credentials.email ||
-                  !credentials.password ||
-                  !credentials.role
-                }
+                disabled={loading || !isFormValid()}
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">

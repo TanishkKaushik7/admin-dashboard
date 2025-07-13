@@ -31,74 +31,76 @@ const ExamManagement = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Exam Management</h1>
-        <Button>Schedule New Exam</Button>
+    <div className="space-y-4 md:space-y-6 px-4 md:px-0">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Exam Management</h1>
+        <Button className="w-full sm:w-auto">Schedule New Exam</Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="flex items-center p-6">
-            <Calendar className="h-8 w-8 text-blue-600" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Scheduled Exams</p>
-              <p className="text-2xl font-bold text-gray-900">24</p>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <Card className="shadow-md hover:shadow-lg transition-shadow duration-200">
+          <CardContent className="flex items-center p-4 md:p-6">
+            <Calendar className="h-6 w-6 md:h-8 md:w-8 text-blue-600 flex-shrink-0" />
+            <div className="ml-3 md:ml-4 min-w-0">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Scheduled Exams</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">24</p>
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="flex items-center p-6">
-            <Clock className="h-8 w-8 text-green-600" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Ongoing</p>
-              <p className="text-2xl font-bold text-gray-900">3</p>
+        <Card className="shadow-md hover:shadow-lg transition-shadow duration-200">
+          <CardContent className="flex items-center p-4 md:p-6">
+            <Clock className="h-6 w-6 md:h-8 md:w-8 text-green-600 flex-shrink-0" />
+            <div className="ml-3 md:ml-4 min-w-0">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Ongoing</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">3</p>
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="flex items-center p-6">
-            <Users className="h-8 w-8 text-yellow-600" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Students</p>
-              <p className="text-2xl font-bold text-gray-900">1,247</p>
+        <Card className="shadow-md hover:shadow-lg transition-shadow duration-200">
+          <CardContent className="flex items-center p-4 md:p-6">
+            <Users className="h-6 w-6 md:h-8 md:w-8 text-yellow-600 flex-shrink-0" />
+            <div className="ml-3 md:ml-4 min-w-0">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Total Students</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">1,247</p>
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="flex items-center p-6">
-            <FileText className="h-8 w-8 text-purple-600" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Answer Sheets</p>
-              <p className="text-2xl font-bold text-gray-900">892</p>
+        <Card className="shadow-md hover:shadow-lg transition-shadow duration-200">
+          <CardContent className="flex items-center p-4 md:p-6">
+            <FileText className="h-6 w-6 md:h-8 md:w-8 text-purple-600 flex-shrink-0" />
+            <div className="ml-3 md:ml-4 min-w-0">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Answer Sheets</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">892</p>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Exam Schedule</CardTitle>
-          <CardDescription>Manage exam schedules and seating arrangements</CardDescription>
+      <Card className="shadow-lg">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg md:text-xl">Exam Schedule</CardTitle>
+          <CardDescription className="text-sm md:text-base">Manage exam schedules and seating arrangements</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-3 md:space-y-4">
             {examSchedules.map((exam) => (
-              <div key={exam.id} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center space-x-4">
-                  <div>
-                    <p className="font-medium">{exam.course}</p>
+              <div key={exam.id} className="flex flex-col lg:flex-row lg:items-center justify-between p-4 md:p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 bg-white">
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 mb-4 lg:mb-0">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-base md:text-lg">{exam.course}</p>
                     <p className="text-sm text-gray-500">{exam.date} at {exam.time}</p>
                   </div>
-                  <Badge variant="outline">{exam.duration}</Badge>
-                  <Badge variant="secondary">{exam.hall}</Badge>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <div className="text-right">
-                    <p className="text-sm font-medium">{exam.students} students</p>
-                    <p className="text-xs text-gray-500">{exam.invigilators.join(', ')}</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline" className="text-xs">{exam.duration}</Badge>
+                    <Badge variant="secondary" className="text-xs">{exam.hall}</Badge>
                   </div>
-                  <Button size="sm" variant="outline">Manage</Button>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between sm:justify-end gap-3 sm:gap-4">
+                  <div className="text-left sm:text-right">
+                    <p className="text-sm font-medium">{exam.students} students</p>
+                    <p className="text-xs text-gray-500 truncate sm:max-w-none max-w-full">{exam.invigilators.join(', ')}</p>
+                  </div>
+                  <Button size="sm" variant="outline" className="w-full sm:w-auto">Manage</Button>
                 </div>
               </div>
             ))}

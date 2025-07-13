@@ -29,6 +29,7 @@ const LeaveManagement = () => {
   const [selectedSchool, setSelectedSchool] = useState('');
   const [selectedDepartment, setSelectedDepartment] = useState('');
   const [leaveFilter, setLeaveFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const leaveApplications = [
     {
@@ -150,33 +151,38 @@ const LeaveManagement = () => {
   };
 
   const filteredApplications = leaveApplications.filter(application => {
-    if (leaveFilter === 'all') return true;
-    return application.status.toLowerCase() === leaveFilter;
+    const matchesSchool = selectedSchool === '' || application.school === selectedSchool;
+    const matchesStatus = leaveFilter === 'all' || application.status.toLowerCase() === leaveFilter;
+    const matchesSearch = application.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         application.employeeId.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    return matchesSchool && matchesStatus && matchesSearch;
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Leave Management</h2>
           <p className="text-gray-600">Manage faculty and staff leave applications</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" className="flex-1 sm:flex-none">
             <Download className="w-4 h-4 mr-2" />
-            Export Report
+            <span className="whitespace-nowrap">Export Report</span>
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" className="flex-1 sm:flex-none">
             <Calendar className="w-4 h-4 mr-2" />
-            Leave Calendar
+            <span className="whitespace-nowrap">Leave Calendar</span>
           </Button>
         </div>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Pending Approvals</p>
@@ -189,7 +195,7 @@ const LeaveManagement = () => {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Approved This Month</p>
@@ -202,7 +208,7 @@ const LeaveManagement = () => {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Rejected</p>
@@ -215,7 +221,7 @@ const LeaveManagement = () => {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Applications</p>
@@ -229,25 +235,39 @@ const LeaveManagement = () => {
         </Card>
       </div>
 
+      {/* Main Tabs */}
       <Tabs defaultValue="applications" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="applications">Applications</TabsTrigger>
-          <TabsTrigger value="balance">Leave Balance</TabsTrigger>
-          <TabsTrigger value="analytics">School Analytics</TabsTrigger>
-          <TabsTrigger value="policies">Leave Policies</TabsTrigger>
-        </TabsList>
+        <div className="relative">
+          <TabsList className="w-full overflow-x-auto pb-2">
+            <div className="flex space-x-4 min-w-max">
+              <TabsTrigger value="applications" className="px-4 py-2 whitespace-nowrap">
+                Applications
+              </TabsTrigger>
+              <TabsTrigger value="balance" className="px-4 py-2 whitespace-nowrap">
+                Leave Balance
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="px-4 py-2 whitespace-nowrap">
+                School Analytics
+              </TabsTrigger>
+              <TabsTrigger value="policies" className="px-4 py-2 whitespace-nowrap">
+                Leave Policies
+              </TabsTrigger>
+            </div>
+          </TabsList>
+        </div>
 
+        {/* Applications Tab */}
         <TabsContent value="applications" className="space-y-6">
           {/* Filters */}
           <Card>
             <CardContent className="p-4">
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3">
                 <div className="flex items-center gap-2">
                   <Filter className="w-4 h-4" />
                   <span className="text-sm font-medium">Filters:</span>
                 </div>
                 <select 
-                  className="px-3 py-1 border border-gray-300 rounded-md text-sm"
+                  className="px-3 py-2 border border-gray-300 rounded-md text-sm"
                   value={selectedSchool}
                   onChange={(e) => setSelectedSchool(e.target.value)}
                 >
@@ -257,7 +277,7 @@ const LeaveManagement = () => {
                   ))}
                 </select>
                 <select 
-                  className="px-3 py-1 border border-gray-300 rounded-md text-sm"
+                  className="px-3 py-2 border border-gray-300 rounded-md text-sm"
                   value={leaveFilter}
                   onChange={(e) => setLeaveFilter(e.target.value)}
                 >
@@ -266,9 +286,13 @@ const LeaveManagement = () => {
                   <option value="approved">Approved</option>
                   <option value="rejected">Rejected</option>
                 </select>
-                <div className="flex items-center gap-2">
+                <div className="flex-1 flex items-center gap-2">
                   <Search className="w-4 h-4 text-gray-400" />
-                  <Input placeholder="Search employee..." className="w-64" />
+                  <Input 
+                    placeholder="Search employee..." 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
                 </div>
               </div>
             </CardContent>
@@ -281,71 +305,74 @@ const LeaveManagement = () => {
               <CardDescription>Manage leave requests from faculty and staff</CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Employee</TableHead>
-                    <TableHead>School/Dept</TableHead>
-                    <TableHead>Leave Type</TableHead>
-                    <TableHead>Duration</TableHead>
-                    <TableHead>Days</TableHead>
-                    <TableHead>Applied Date</TableHead>
-                    <TableHead>HoD Status</TableHead>
-                    <TableHead>Admin Status</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredApplications.map((application) => (
-                    <TableRow key={application.id}>
-                      <TableCell>
-                        <div className="font-medium">{application.name}</div>
-                        <div className="text-sm text-gray-500">{application.employeeId}</div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="font-medium">{application.school}</div>
-                        <div className="text-sm text-gray-500">{application.department}</div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{getLeaveTypeName(application.leaveType)}</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          {application.fromDate}
-                          <div className="text-gray-500">to {application.toDate}</div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <span className="font-medium">{application.days} days</span>
-                      </TableCell>
-                      <TableCell>{application.appliedDate}</TableCell>
-                      <TableCell>{getStatusBadge(application.hodStatus)}</TableCell>
-                      <TableCell>{getStatusBadge(application.adminStatus)}</TableCell>
-                      <TableCell>
-                        <div className="flex gap-1">
-                          {application.status === 'Pending' && (
-                            <>
-                              <Button size="sm" variant="outline" className="text-green-600">
-                                <CheckCircle className="w-3 h-3" />
-                              </Button>
-                              <Button size="sm" variant="outline" className="text-red-600">
-                                <XCircle className="w-3 h-3" />
-                              </Button>
-                            </>
-                          )}
-                          <Button size="sm" variant="outline">
-                            View
-                          </Button>
-                        </div>
-                      </TableCell>
+              <div className="overflow-x-auto">
+                <Table className="min-w-[1000px] md:min-w-full">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="whitespace-nowrap">Employee</TableHead>
+                      <TableHead className="whitespace-nowrap">School/Dept</TableHead>
+                      <TableHead className="whitespace-nowrap">Leave Type</TableHead>
+                      <TableHead className="whitespace-nowrap">Duration</TableHead>
+                      <TableHead className="whitespace-nowrap">Days</TableHead>
+                      <TableHead className="whitespace-nowrap">Applied Date</TableHead>
+                      <TableHead className="whitespace-nowrap">HoD Status</TableHead>
+                      <TableHead className="whitespace-nowrap">Admin Status</TableHead>
+                      <TableHead className="whitespace-nowrap">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredApplications.map((application) => (
+                      <TableRow key={application.id}>
+                        <TableCell className="whitespace-nowrap">
+                          <div className="font-medium">{application.name}</div>
+                          <div className="text-sm text-gray-500">{application.employeeId}</div>
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap">
+                          <div className="font-medium">{application.school}</div>
+                          <div className="text-sm text-gray-500">{application.department}</div>
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap">
+                          <Badge variant="outline">{getLeaveTypeName(application.leaveType)}</Badge>
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap">
+                          <div className="text-sm">
+                            {application.fromDate}
+                            <div className="text-gray-500">to {application.toDate}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap">
+                          <span className="font-medium">{application.days} days</span>
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap">{application.appliedDate}</TableCell>
+                        <TableCell>{getStatusBadge(application.hodStatus)}</TableCell>
+                        <TableCell>{getStatusBadge(application.adminStatus)}</TableCell>
+                        <TableCell className="whitespace-nowrap">
+                          <div className="flex gap-1">
+                            {application.status === 'Pending' && (
+                              <>
+                                <Button size="sm" variant="outline" className="text-green-600">
+                                  <CheckCircle className="w-3 h-3" />
+                                </Button>
+                                <Button size="sm" variant="outline" className="text-red-600">
+                                  <XCircle className="w-3 h-3" />
+                                </Button>
+                              </>
+                            )}
+                            <Button size="sm" variant="outline">
+                              View
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
+        {/* Leave Balance Tab */}
         <TabsContent value="balance" className="space-y-6">
           <Card>
             <CardHeader>
@@ -353,70 +380,73 @@ const LeaveManagement = () => {
               <CardDescription>Monitor leave balances for all faculty and staff</CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Employee</TableHead>
-                    <TableHead>CL Balance</TableHead>
-                    <TableHead>EL Balance</TableHead>
-                    <TableHead>DL Balance</TableHead>
-                    <TableHead>AL Balance</TableHead>
-                    <TableHead>Total Taken</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {leaveBalance.map((balance) => (
-                    <TableRow key={balance.employeeId}>
-                      <TableCell>
-                        <div className="font-medium">{balance.name}</div>
-                        <div className="text-sm text-gray-500">{balance.employeeId}</div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{balance.cl}</span>
-                          <span className="text-xs text-gray-500">/ 12</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{balance.el}</span>
-                          <span className="text-xs text-gray-500">/ 30</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{balance.dl}</span>
-                          <span className="text-xs text-gray-500">/ 365</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{balance.al}</span>
-                          <span className="text-xs text-gray-500">/ 30</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <span className="font-medium text-blue-600">{balance.taken} days</span>
-                      </TableCell>
-                      <TableCell>
-                        {balance.cl < 3 ? (
-                          <Badge variant="destructive">
-                            <AlertTriangle className="w-3 h-3 mr-1" />
-                            Low Balance
-                          </Badge>
-                        ) : (
-                          <Badge variant="default">Normal</Badge>
-                        )}
-                      </TableCell>
+              <div className="overflow-x-auto">
+                <Table className="min-w-[800px] md:min-w-full">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="whitespace-nowrap">Employee</TableHead>
+                      <TableHead className="whitespace-nowrap">CL Balance</TableHead>
+                      <TableHead className="whitespace-nowrap">EL Balance</TableHead>
+                      <TableHead className="whitespace-nowrap">DL Balance</TableHead>
+                      <TableHead className="whitespace-nowrap">AL Balance</TableHead>
+                      <TableHead className="whitespace-nowrap">Total Taken</TableHead>
+                      <TableHead className="whitespace-nowrap">Status</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {leaveBalance.map((balance) => (
+                      <TableRow key={balance.employeeId}>
+                        <TableCell className="whitespace-nowrap">
+                          <div className="font-medium">{balance.name}</div>
+                          <div className="text-sm text-gray-500">{balance.employeeId}</div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{balance.cl}</span>
+                            <span className="text-xs text-gray-500">/ 12</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{balance.el}</span>
+                            <span className="text-xs text-gray-500">/ 30</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{balance.dl}</span>
+                            <span className="text-xs text-gray-500">/ 365</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{balance.al}</span>
+                            <span className="text-xs text-gray-500">/ 30</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <span className="font-medium text-blue-600">{balance.taken} days</span>
+                        </TableCell>
+                        <TableCell>
+                          {balance.cl < 3 ? (
+                            <Badge variant="destructive">
+                              <AlertTriangle className="w-3 h-3 mr-1" />
+                              Low Balance
+                            </Badge>
+                          ) : (
+                            <Badge variant="default">Normal</Badge>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
+        {/* Analytics Tab */}
         <TabsContent value="analytics" className="space-y-6">
           <Card>
             <CardHeader>
@@ -453,7 +483,7 @@ const LeaveManagement = () => {
                         title={`Rejected: ${school.rejected}`}
                       />
                     </div>
-                    <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-sm">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                         Approved: {school.approved}
@@ -474,8 +504,9 @@ const LeaveManagement = () => {
           </Card>
         </TabsContent>
 
+        {/* Policies Tab */}
         <TabsContent value="policies" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {LEAVE_TYPES.map((leaveType) => (
               <Card key={leaveType.id}>
                 <CardHeader>

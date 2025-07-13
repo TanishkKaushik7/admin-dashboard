@@ -89,7 +89,7 @@ const AdminDashboard = ({ userRole, onLogout }) => {
       {/* Overlay for mobile */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 z-30 bg-black bg-opacity-50 lg:hidden transition-opacity duration-300 ease-in-out"
+          className="fixed inset-0 z-30  bg-opacity-50 lg:hidden transition-opacity duration-300 ease-in-out"
           onClick={() => setSidebarOpen(false)}
         />
       )}

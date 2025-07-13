@@ -3,7 +3,7 @@ import { ToastProvider } from "./components/ui/sonner";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
-
+import UnderDevLogin from "./components/underdevelopmentLogin";
 import LoginPage from "./components/LoginPage";
 import AdminDashboard from "./components/AdminDashboard";
 import NotFound from "./pages/NotFound";
@@ -21,16 +21,24 @@ function RequireAuth({ isLoggedIn, children }) {
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState("");
+  const [showDevLogin, setShowDevLogin] = useState(true);
 
+  const handleDevLogin = () => {
+    setShowDevLogin(false);
+  };
+
+  // Check for regular login (only after dev login is passed)
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
-    if (token && role) {
-      setIsLoggedIn(true);
-      setUserRole(role);
-      toast.success(`Welcome back, ${role}!`);
+    if (!showDevLogin) {
+      const token = localStorage.getItem("token");
+      const role = localStorage.getItem("role");
+      if (token && role) {
+        setIsLoggedIn(true);
+        setUserRole(role);
+        toast.success(`Welcome back, ${role}!`);
+      }
     }
-  }, []);
+  }, [showDevLogin]);
 
   const handleLogin = (role) => {
     localStorage.setItem("role", role);
@@ -46,6 +54,11 @@ const App = () => {
     setUserRole("");
     toast.success("Logged out successfully");
   };
+
+  // Show under-development login first on every load
+  if (showDevLogin) {
+    return <UnderDevLogin onLogin={handleDevLogin} />;
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
